@@ -48,7 +48,7 @@ stage('Publish artificats to UrbanCode Deploy'){
         	deploy: [
             	$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeployHelper$DeployBlock',
             	deployApp: 'PetClinic',
-            	deployEnv: 'PetClinic_Dev',
+            	deployEnv: 'Dev',
             	deployProc: 'Deploy-PetClinic',
             	createProcess: [
                 	$class: 'com.urbancode.jenkins.plugins.ucdeploy.ProcessHelper$CreateProcessBlock',

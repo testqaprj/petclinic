@@ -21,7 +21,7 @@ node {
 			sh 'mvn test -Dtest=<CUCUMBER_TEST_CLASS_NAME>'
 		}
 		cucumber buildStatus: "Success",
-		fileIncludePattern: "**/cucumber.json",
+		fileIncludePattern: "cucumber.json",
 		jsonReportDirectory: '<Path/to/report/folder>'
 	}
    

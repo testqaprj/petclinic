@@ -3,8 +3,8 @@ node {
 	def GIT_COMMIT
 	stage ('SCM'){
 		checkout([
-			$class: 'GitSCM', branches: [[name: '*/<BRANCH_NAME>']],
-			userRemoteConfigs: [[url: '<GIT_REPO_URL>'],[credentialsId:'<GIT_CREDENTIAL_ID>']]
+			$class: 'GitSCM', branches: [[name: 'master']],
+			userRemoteConfigs: [[url: 'https://github.com/testqaprj/petclinic.git'],[credentialsId:'aug22']]
 		])
 		GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
 	}
@@ -33,7 +33,7 @@ node {
 	}
 
 
-	stage ("Appscan"){
+	/*stage ("Appscan"){
 		sleep 40
 		appscan application: '<APPSCAN_APPLICATION_NAME>',
 				credentials: '<ASOC_CREDENTIAL_ID>',
@@ -43,7 +43,7 @@ node {
 				scanner: static_analyzer(hasOptions: false, target: '/var/jenkins_home/jobs/project_name'),
 				type: 'Static Analyzer',
 				wait: true
-	}
+	}*/
 
 	stage('Publish Artificats to UCD'){
 		step([$class: 'UCDeployPublisher',

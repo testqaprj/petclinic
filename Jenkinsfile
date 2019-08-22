@@ -47,14 +47,14 @@ node {
 
 	stage('Publish Artificats to UCD'){
 		step([$class: 'UCDeployPublisher',
-			siteName: '<UCD_SERVER_NAME>',
+			siteName: 'ucd-server',
 			component: [
 				$class: 'com.urbancode.jenkins.plugins.ucdeploy.VersionHelper$VersionBlock',
-				componentName: '<COMPONENT_NAME>',
+				componentName: 'pet_component',
 				createComponent: [
 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.ComponentHelper$CreateComponentBlock',
 					componentTemplate: '',
-					componentApplication: '<APPLICATION_NAME>'
+					componentApplication: 'JpetApp'
 				],
 				delivery: [
 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeliveryHelper$Push',
@@ -69,22 +69,22 @@ node {
 		def newComponentVersionId = "${JpetComponent_VersionId}"
 		step(
 			$class: 'UploadBuild',
-			tenantId: "<UCD_TENANTID>",
+			tenantId: "5ade13625558f2c6688d15ce",
 			revision: "${GIT_COMMIT}",
-			appName: "<APPLICATION_NAME>", requestor: "admin", id: "${newComponentVersionId}"
+			appName: "JpetApp", requestor: "admin", id: "${newComponentVersionId}"
 		)
 		sleep 25
 		step([$class: 'UCDeployPublisher',
 			deploy: [ createSnapshot: [deployWithSnapshot: true,
 					snapshotName: "1.${BUILD_NUMBER}"],
-				deployApp: '<APPLICATION_NAME>',
+				deployApp: 'JpetApp',
 				deployDesc: 'Requested from Jenkins',
-				deployEnv: '<PROJECT_DEPLOYMENT_ENVIRONMENT>',
+				deployEnv: 'Testenv',
 				deployOnlyChanged: false,
-				deployProc: 'Deploy-<PROJECT_NAME>',
+				deployProc: 'petclinicprocess',
 				deployReqProps: '',
-				deployVersions: "<COMPONENT_NAME>:1.${BUILD_NUMBER}"],
-			siteName: '<UCD_SERVER_NAME>']
+				deployVersions: "pet_component:1.${BUILD_NUMBER}"],
+			siteName: 'ucd-server']
 		)
 	}
 

@@ -15,22 +15,24 @@ node {
 		}
 	}
 
-	/*stage ('Cucumber'){
+	/*
+	stage ('Cucumber'){
 		withMaven(jdk: 'JDK_local', maven: 'MVN_Local') {
 			sh 'mvn test -Dtest=<CUCUMBER_TEST_CLASS_NAME>'
 		}
 		cucumber buildStatus: "Success",
 		fileIncludePattern: "**/cucumber.json",
 		jsonReportDirectory: '<Path/to/report/folder>'
-	}*/
-
-	/*stage('SonarQube Analysis'){
+	}
+   
+*/
+	stage('SonarQube Analysis'){
 		def mvnHome = tool name : 'MVN_Local', type:'maven'
 		withSonarQubeEnv('sonar-server'){
 			"SONAR_USER_HOME=/opt/bitnami/jenkins/.sonar ${mvnHome}/bin/mvn sonar:sonar"
 			sh  "${mvnHome}/bin/mvn sonar:sonar -Dsonar.projectKey=<PROJECT_KEY> -Dsonar.projectName=<PROJECT_NAME>"
 		}
-	}*/
+	}
 
 
 	/*stage ("Appscan"){

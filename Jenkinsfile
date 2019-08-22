@@ -68,7 +68,7 @@ node {
 				]
 			]
 		])
-		def newComponentVersionId = "${JpetComponent_VersionId}"
+		def newComponentVersionId = "${petComponent_VersionId}"
 		step(
 			$class: 'UploadBuild',
 			tenantId: "5ade13625558f2c6688d15ce",

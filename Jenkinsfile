@@ -50,7 +50,7 @@ node {
 			siteName: 'ucd-server',
 			component: [
 				$class: 'com.urbancode.jenkins.plugins.ucdeploy.VersionHelper$VersionBlock',
-				componentName: 'pet-component',
+				componentName: 'pet_component',
 				createComponent: [
 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.ComponentHelper$CreateComponentBlock',
 					componentTemplate: '',
@@ -83,7 +83,7 @@ node {
 				deployOnlyChanged: false,
 				deployProc: 'pet-app-process',
 				deployReqProps: '',
-				deployVersions: "pet-component:1.${BUILD_NUMBER}"],
+				deployVersions: "pet_component:1.${BUILD_NUMBER}"],
 			siteName: 'ucd-server']
 		)
 	}

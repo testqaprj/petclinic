@@ -22,7 +22,7 @@ node {
 		cucumber buildStatus: "Success",
 		//fileIncludePattern: "**///cucumber.json",
 		//jsonReportDirectory: '<Path/to/report/folder>'
-	}*/
+	//}
 
 	stage('SonarQube Analysis'){
 		def mvnHome = tool name : 'MVN_Local', type:'maven'

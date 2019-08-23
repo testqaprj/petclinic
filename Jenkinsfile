@@ -3,8 +3,8 @@ node {
 	def GIT_COMMIT
 	stage ('SCM'){
 		checkout([
-			$class: 'GitSCM', branches: [[name: 'master']],
-			userRemoteConfigs: [[url: 'https://github.com/testqaprj/petclinic.git'],[credentialsId:'aug22']]
+			$class: 'GitSCM', branches: [[name: '*/<BRANCH_NAME>']],
+			userRemoteConfigs: [[url: '<GIT_REPO_URL>'],[credentialsId:'<GIT_CREDENTIAL_ID>']]
 		])
 		GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse HEAD").trim()
 	}
@@ -15,27 +15,25 @@ node {
 		}
 	}
 
-	/*
 	stage ('Cucumber'){
 		withMaven(jdk: 'JDK_local', maven: 'MVN_Local') {
 			sh 'mvn test -Dtest=<CUCUMBER_TEST_CLASS_NAME>'
 		}
 		cucumber buildStatus: "Success",
-		fileIncludePattern: "cucumber.json",
+		fileIncludePattern: "**/cucumber.json",
 		jsonReportDirectory: '<Path/to/report/folder>'
 	}
-   
-*/
+
 	stage('SonarQube Analysis'){
 		def mvnHome = tool name : 'MVN_Local', type:'maven'
 		withSonarQubeEnv('sonar-server'){
 			"SONAR_USER_HOME=/opt/bitnami/jenkins/.sonar ${mvnHome}/bin/mvn sonar:sonar"
-			sh  "${mvnHome}/bin/mvn sonar:sonar -Dsonar.projectKey=petclinic -Dsonar.projectName=PetClinic"
+			sh  "${mvnHome}/bin/mvn sonar:sonar -Dsonar.projectKey=<PROJECT_KEY> -Dsonar.projectName=<PROJECT_NAME>"
 		}
 	}
 
 
-	/*stage ("Appscan"){
+	stage ("Appscan"){
 		sleep 40
 		appscan application: '<APPSCAN_APPLICATION_NAME>',
 				credentials: '<ASOC_CREDENTIAL_ID>',
@@ -45,18 +43,18 @@ node {
 				scanner: static_analyzer(hasOptions: false, target: '/var/jenkins_home/jobs/project_name'),
 				type: 'Static Analyzer',
 				wait: true
-	}*/
+	}
 
 	stage('Publish Artificats to UCD'){
 		step([$class: 'UCDeployPublisher',
-			siteName: 'ucd-server',
+			siteName: '<UCD_SERVER_NAME>',
 			component: [
 				$class: 'com.urbancode.jenkins.plugins.ucdeploy.VersionHelper$VersionBlock',
-				componentName: 'pet_component',
+				componentName: '<COMPONENT_NAME>',
 				createComponent: [
 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.ComponentHelper$CreateComponentBlock',
 					componentTemplate: '',
-					componentApplication: 'JpetApp'
+					componentApplication: '<APPLICATION_NAME>'
 				],
 				delivery: [
 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeliveryHelper$Push',
@@ -68,25 +66,25 @@ node {
 				]
 			]
 		])
-		def newComponentVersionId = "${pet_component_VersionId}"
+		def newComponentVersionId = "${JpetComponent_VersionId}"
 		step(
 			$class: 'UploadBuild',
-			tenantId: "5ade13625558f2c6688d15ce",
+			tenantId: "<UCD_TENANTID>",
 			revision: "${GIT_COMMIT}",
-			appName: "JpetApp", requestor: "admin", id: "${newComponentVersionId}"
+			appName: "<APPLICATION_NAME>", requestor: "admin", id: "${newComponentVersionId}"
 		)
 		sleep 25
 		step([$class: 'UCDeployPublisher',
 			deploy: [ createSnapshot: [deployWithSnapshot: true,
 					snapshotName: "1.${BUILD_NUMBER}"],
-				deployApp: 'JpetApp',
+				deployApp: '<APPLICATION_NAME>',
 				deployDesc: 'Requested from Jenkins',
-				deployEnv: 'Testenv',
+				deployEnv: '<PROJECT_DEPLOYMENT_ENVIRONMENT>',
 				deployOnlyChanged: false,
-				deployProc: 'petclinicprocess',
+				deployProc: 'Deploy-<PROJECT_NAME>',
 				deployReqProps: '',
-				deployVersions: "pet_component:1.${BUILD_NUMBER}"],
-			siteName: 'ucd-server']
+				deployVersions: "<COMPONENT_NAME>:1.${BUILD_NUMBER}"],
+			siteName: '<UCD_SERVER_NAME>']
 		)
 	}
 
